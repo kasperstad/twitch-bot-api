@@ -59,38 +59,30 @@ const subRecordHandler = async req => {
 
 		channel = channel.toLowerCase()
 
-		let subRecordData = await getCache("subrecord") || "{}"
-		let subRecordDataObj = JSON.parse(atob(subRecordData))
+		let subRecordData = atob(await getCache("subrecord")) || "{}"
+		let subRecordDataObj = JSON.parse(subRecordData)
 
 		if (!subRecordDataObj.hasOwnProperty(channel)) {
 			subRecordDataObj[channel] = { count: 0, date: "1970-01-01" }
 		}
 
-		let channelDataObj = subRecordDataObj[channel]
-
-		let subRecord = channelDataObj.count
-		let subRecordDate = channelDataObj.date
-
-		if (parseInt(count) > parseInt(subRecord)) {
+		if (parseInt(count) > parseInt(subRecordDataObj[channel].count)) {
 
 			const tzDate = new Date().toLocaleString('en-US', {timeZone: TZ})
 			const currentDate = new Date(tzDate)
 
-			subRecord = parseInt(count)
-			subRecordDate = currentDate.toISOString().split('T')[0]
-
-			subRecordDataObj[channel].count = parseInt(subRecord)
-			subRecordDataObj[channel].date = subRecordDate
+			subRecordDataObj[channel].count = parseInt(count)
+			subRecordDataObj[channel].date = currentDate.toISOString().split('T')[0]
 
 			await setCache("subrecord", btoa(JSON.stringify(subRecordDataObj)))
 		}
 
 		if (silent != true) {
 
-			responseString = "On " + subRecordDate + " we hit " + subRecord + " subs!"
+			responseString = "On " + subRecordDataObj[channel].date + " we hit " + subRecordDataObj[channel].count + " subs!"
 
 			if (danishString) {
-				responseString = "Den " + subRecordDate + " ramte vi " + subRecord + " subs!"
+				responseString = "Den " + subRecordDataObj[channel].date + " ramte vi " + subRecordDataObj[channel].count + " subs!"
 			}
 		}
 	}
