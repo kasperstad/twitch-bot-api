@@ -45,59 +45,63 @@ const getCache = key => KV.get(key)
  */
 const subRecordHandler = async req => {
 
-    const { searchParams } = new URL(req.url)
+	const { searchParams } = new URL(req.url)
 
-    const count = searchParams.get("count") || 0
-    const danishString = searchParams.has("da")
-    const silent = searchParams.has("silent")
+	const count = searchParams.get("count") || 0
+	const danishString = searchParams.has("da")
+	const silent = searchParams.has("silent")
 
-    let channel = searchParams.get("channel") || null
+	let channel = searchParams.get("channel") || null
 
-    let responseString = ""
+	let responseString = ""
 
-    if (channel != null) {
+	if (channel != null) {
 
-        channel = channel.toLowerCase()
+		channel = channel.toLowerCase()
 
-        let channelData = await getCache(channel) || "{\"count\":0,\"date\":\"1970-01-01\"}";
-        let channelDataObj = JSON.parse(channelData)
+		let subRecordData = await getCache("subrecord") || "{}"
+		let subRecordDataObj = JSON.parse(atob(subRecordData))
 
-        if (channelData != false) {
+		if (!subRecordDataObj.hasOwnProperty(channel)) {
+			subRecordDataObj[channel] = { count: 0, date: "1970-01-01" }
+		}
 
-            let subRecord = channelDataObj.count
-            let subRecordDate = channelDataObj.date
+		let channelDataObj = subRecordDataObj[channel]
 
-            if (parseInt(count) > parseInt(subRecord)) {
+		let subRecord = channelDataObj.count
+		let subRecordDate = channelDataObj.date
 
-                const tzDate = new Date().toLocaleString('en-US', {timeZone: TZ})
-                const currentDate = new Date(tzDate)
+		if (parseInt(count) > parseInt(subRecord)) {
 
-                subRecord = parseInt(count)
-                subRecordDate = currentDate.toISOString().split('T')[0]
-                
-                await setCache(channel, JSON.stringify({ 
-                    count: parseInt(subRecord), date: subRecordDate
-                }))
-            }
+			const tzDate = new Date().toLocaleString('en-US', {timeZone: TZ})
+			const currentDate = new Date(tzDate)
 
-            if (silent != true) {
+			subRecord = parseInt(count)
+			subRecordDate = currentDate.toISOString().split('T')[0]
 
-                responseString = "On " + subRecordDate + " we hit " + subRecord + " subs!"
+			subRecordDataObj[channel].count = parseInt(subRecord)
+			subRecordDataObj[channel].date = subRecordDate
 
-                if (danishString) {
-                    responseString = "Den " + subRecordDate + " ramte vi " + subRecord + " subs!"
-                }
-            }
-        }
-    }
+			await setCache("subrecord", btoa(JSON.stringify(subRecordDataObj)))
+		}
 
-    return new Response(responseString, {
-        status: 200,
-        statusText: "OK",
-        headers: {
-            'content-type': 'text/plain',
-        }
-    })
+		if (silent != true) {
+
+			responseString = "On " + subRecordDate + " we hit " + subRecord + " subs!"
+
+			if (danishString) {
+				responseString = "Den " + subRecordDate + " ramte vi " + subRecord + " subs!"
+			}
+		}
+	}
+
+	return new Response(responseString, {
+		status: 200,
+		statusText: "OK",
+		headers: {
+			'content-type': 'text/plain',
+		}
+	})
 }
 
 export default subRecordHandler

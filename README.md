@@ -1,8 +1,6 @@
 # twitch-bot-worker
 
 Cloudflare Worker for Twitch Bots. 
-This worker implements these services, age, fivem and subrecord.
-
 This worker is currently supported for two bots:
 
 * Nightbot

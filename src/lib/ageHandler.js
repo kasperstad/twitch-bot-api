@@ -30,36 +30,36 @@
  */
 const ageHandler = async req => {
 
-    const { searchParams } = new URL(req.url)
-  
-    const birthDay = searchParams.get("birthday") || null;
+	const { searchParams } = new URL(req.url)
 
-    let responseText = ""
-  
-    if (birthDay != null) {
-  
-        const tzDate = new Date().toLocaleString('en-US', {timeZone: TZ})
-        const currentDate = new Date(tzDate)
+	const birthDay = searchParams.get("birthday") || null;
 
-        const birthDayDate = new Date(birthDay)
+	let responseText = ""
 
-        let currentAge = currentDate.getFullYear() -  birthDayDate.getFullYear()
-        let month = currentDate.getMonth() -  birthDayDate.getMonth()
+	if (birthDay != null) {
 
-        if (month < 0 || (month === 0 && currentDate.getDate() < birthDayDate.getDate())) {
-            currentAge--
-        }
+		const tzDate = new Date().toLocaleString('en-US', {timeZone: TZ})
+		const currentDate = new Date(tzDate)
 
-        responseText = currentAge
-    }
-  
-    return new Response(responseText, {
-        status: 200,
-        statusText: "OK",
-        headers: {
-            'content-type': 'text/plain',
-        }
-    })
+		const birthDayDate = new Date(birthDay)
+
+		let currentAge = currentDate.getFullYear() -  birthDayDate.getFullYear()
+		let month = currentDate.getMonth() -  birthDayDate.getMonth()
+
+		if (month < 0 || (month === 0 && currentDate.getDate() < birthDayDate.getDate())) {
+			currentAge--
+		}
+
+		responseText = currentAge
+	}
+
+	return new Response(responseText, {
+		status: 200,
+		statusText: "OK",
+		headers: {
+			'content-type': 'text/plain',
+		}
+	})
 }
 
 export default ageHandler

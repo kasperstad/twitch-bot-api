@@ -1,4 +1,4 @@
-name = "twitch-bot-worker"
+name = "twitch-bot-api"
 type = "webpack"
 account_id = ""
 workers_dev = true
@@ -8,5 +8,5 @@ webpack_config = "webpack.config.js"
 compatibility_date = "2022-02-15"
 vars = { TZ = "Europe/Copenhagen" }
 kv_namespaces = [ 
-    { binding = "KV", id = "" }
+	{ binding = "KV", id = "" }
 ]

@@ -28,12 +28,12 @@ import ageHandler from './lib/ageHandler'
 import subRecordHandler from './lib/subRecordHandler'
 
 const WHITELISTED_AGENTS = [
-    "Nightbot-URL-Fetcher/0.0.3",
-    "StreamElements Bot"
+	"Nightbot-URL-Fetcher/0.0.3",
+	"StreamElements Bot"
 ]
 
 addEventListener('fetch', event => {
-    event.respondWith(mainHandler(event.request))
+	event.respondWith(mainHandler(event.request))
 })
 
 /**
@@ -43,14 +43,14 @@ addEventListener('fetch', event => {
  */
 async function mainHandler(request) {
 
-    const router = new Router()
-    const userAgent = request.headers.get("User-Agent")
+	const router = new Router()
+	const userAgent = request.headers.get("User-Agent")
 
-    if (WHITELISTED_AGENTS.includes(userAgent)) {
+	if (WHITELISTED_AGENTS.includes(userAgent)) {
 
-        router.get('/api/age', () => ageHandler(request))
-        router.get('/api/subrecord', () => subRecordHandler(request))
-    }
+		router.get('/api/age', () => ageHandler(request))
+		router.get('/api/subrecord', () => subRecordHandler(request))
+	}
 
-    return await router.route(request)
+	return await router.route(request)
 }

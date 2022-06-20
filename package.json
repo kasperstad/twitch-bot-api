@@ -1,8 +1,7 @@
 {
-    "private": true,
-    "name": "twitch-bot-worker",
-    "version": "1.0.0",
-    "description": "Cloudflare Worker for Twitch Bots",
-    "license": "MIT"
+	"private": true,
+	"name": "twitch-bot-api",
+	"version": "1.0.0",
+	"description": "Cloudflare Worker for Twitch Bots",
+	"license": "MIT"
 }
-  
