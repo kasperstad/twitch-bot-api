@@ -48,8 +48,8 @@ async function mainHandler(request) {
 
 	if (WHITELISTED_AGENTS.includes(userAgent)) {
 
-		router.get('/api/age', () => ageHandler(request))
-		router.get('/api/subrecord', () => subRecordHandler(request))
+		router.get('/age', () => ageHandler(request))
+		router.get('/subrecord', () => subRecordHandler(request))
 	}
 
 	return await router.route(request)
