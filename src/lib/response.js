@@ -23,13 +23,13 @@
  */
 
 const securityHeaders = {
-    "Content-Security-Policy" : "default-src 'self'; frame-ancestors 'none'",
-    "Cross-Origin-Embedder-Policy" : "require-corp",
-    "Cross-Origin-Opener-Policy" : "same-origin",
-    "Cross-Origin-Resource-Policy" : "same-site",
-    "Permissions-Policy" : "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()",
-    "Referrer-Policy" : "no-referrer",
-    "X-Frame-Options" : "SAMEORIGIN"
+	"Content-Security-Policy" : "default-src 'self'; frame-ancestors 'none'",
+	"Cross-Origin-Embedder-Policy" : "require-corp",
+	"Cross-Origin-Opener-Policy" : "same-origin",
+	"Cross-Origin-Resource-Policy" : "same-site",
+	"Permissions-Policy" : "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()",
+	"Referrer-Policy" : "no-referrer",
+	"X-Frame-Options" : "SAMEORIGIN"
 }
 
 /**
@@ -39,17 +39,17 @@ const securityHeaders = {
 
 const response = (text = '404: Not Found', statusCode = 404, statusText = 'Not Found') => {
 
-    const newHeaders = new Headers()
-    const setHeaders = Object.assign({}, securityHeaders);
+	const newHeaders = new Headers()
+	const setHeaders = Object.assign({}, securityHeaders);
 
-    newHeaders.set("Content-Type", "text/plain")
-    Object.keys(setHeaders).forEach(name => newHeaders.set(name, setHeaders[name]));
+	newHeaders.set("Content-Type", "text/plain")
+	Object.keys(setHeaders).forEach(name => newHeaders.set(name, setHeaders[name]));
 
-    return new Response(text, {
-        status: statusCode,
-        statusText: statusText,
-        headers: newHeaders
-    })
+	return new Response(text, {
+		status: statusCode,
+		statusText: statusText,
+		headers: newHeaders
+	})
 }
 
 export default response
