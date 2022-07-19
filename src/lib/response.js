@@ -22,38 +22,34 @@
  * SOFTWARE.
  */
 
-import response from "./response"
-
-/**
- * Calculate the streamers age from request parameter and returns that value
- * @param {string} birthday The birtday in the form: yyyy-MM-dd (eg. 1970-01-01)
- * @param {Object} req The Request object from the mainHandler
- * @returns {Response} HTTP Response with Status plain/text and body as the age (integer)
- */
-const ageHandler = async req => {
-
-	const { searchParams } = new URL(req.url)
-
-	let day = searchParams.get("day") || null;
-
-	if (day != null) {
-
-		const tzDate = new Date().toLocaleString('en-US', {timeZone: TZ})
-		const currentDate = new Date(tzDate)
-
-		day = new Date(day)
-
-		let currentAge = currentDate.getFullYear() - day.getFullYear()
-		let month = currentDate.getMonth() - day.getMonth()
-
-		if (month < 0 || (month === 0 && currentDate.getDate() < day.getDate())) {
-			currentAge--
-		}
-
-		return response(currentAge, 200, 'OK')
-	}
-
-	return response()
+const securityHeaders = {
+    "Content-Security-Policy" : "default-src 'self'; frame-ancestors 'none'",
+    "Cross-Origin-Embedder-Policy" : "require-corp",
+    "Cross-Origin-Opener-Policy" : "same-origin",
+    "Cross-Origin-Resource-Policy" : "same-site",
+    "Permissions-Policy" : "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()",
+    "Referrer-Policy" : "no-referrer",
+    "X-Frame-Options" : "SAMEORIGIN"
 }
 
-export default ageHandler
+/**
+ * Default response to undefined and unmatched routes and requests
+ * @returns {Response} HTTP Response with Status plain/text and body as the string defined
+ */
+
+const response = (text = '404: Not Found', statusCode = 404, statusText = 'Not Found') => {
+
+    const newHeaders = new Headers()
+    const setHeaders = Object.assign({}, securityHeaders);
+
+    newHeaders.set("Content-Type", "text/plain")
+    Object.keys(setHeaders).forEach(name => newHeaders.set(name, setHeaders[name]));
+
+    return new Response(text, {
+        status: statusCode,
+        statusText: statusText,
+        headers: newHeaders
+    })
+}
+
+export default response

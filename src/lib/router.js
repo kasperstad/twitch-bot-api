@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+const { default: response } = require("./response")
+
 /**
  * Helper functions that when passed a request will return a
  * boolean indicating if the request uses that HTTP method,
@@ -115,13 +117,7 @@ class Router {
 			return route.handler(req)
 		}
 
-		return new Response('404: Not Found', {
-			status: 404,
-			statusText: 'Not Found',
-			headers: {
-				'content-type': 'text/plain',
-			},
-		})
+		return response()
 	}
 
 	/**

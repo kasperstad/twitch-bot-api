@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+import response from "./response"
+
 /**
  * Helper functions to get and set data in Workers KV
  * @param {string} key The KV Key name
@@ -53,13 +55,11 @@ const subRecordHandler = async req => {
 
 	let channel = searchParams.get("channel") || null
 
-	let responseString = ""
-
 	if (channel != null) {
 
 		channel = channel.toLowerCase()
 
-		let subRecordData = atob(await getCache("subrecord")) || "{}"
+		let subRecordData = await getCache("subrecord") || "{}"
 		let subRecordDataObj = JSON.parse(subRecordData)
 
 		if (!subRecordDataObj.hasOwnProperty(channel)) {
@@ -74,8 +74,10 @@ const subRecordHandler = async req => {
 			subRecordDataObj[channel].count = parseInt(count)
 			subRecordDataObj[channel].date = currentDate.toISOString().split('T')[0]
 
-			await setCache("subrecord", btoa(JSON.stringify(subRecordDataObj)))
+			await setCache("subrecord", JSON.stringify(subRecordDataObj))
 		}
+
+		let responseString = ""
 
 		if (silent != true) {
 
@@ -85,15 +87,11 @@ const subRecordHandler = async req => {
 				responseString = "Den " + subRecordDataObj[channel].date + " ramte vi " + subRecordDataObj[channel].count + " subs!"
 			}
 		}
+
+		return response(responseString, 200, 'OK')
 	}
 
-	return new Response(responseString, {
-		status: 200,
-		statusText: "OK",
-		headers: {
-			'content-type': 'text/plain',
-		}
-	})
+	return response()
 }
 
 export default subRecordHandler
